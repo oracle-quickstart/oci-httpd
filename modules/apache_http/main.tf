@@ -38,7 +38,7 @@ resource "oci_core_instance" "private" {
   }
 
   provisioner "file" {
-      source        = "~/work/oci/new/modules/apache_http/scripts/setup.sh"
+      source        = "./scripts/setup.sh"
       destination   = "~/setup.sh"
   }
 
