@@ -45,7 +45,7 @@ resource "oci_core_instance" "private" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x ~/setup.sh",
-        "sudo ~/setup.sh ${var.label_prefix}",
+        "sudo ~/setup.sh ${var.http_port} ${var.label_prefix}",
     ]
   }
 }

@@ -17,3 +17,11 @@ output "apache_instance3_ip" {
 output "loadbalancer_ip" {
     value = "${module.apache_load_balancer.loadbalancer_ip}"
 }
+
+output "loadbalancer_instance1_ip" {
+    value = "${module.apache_load_balancer.lb_instance1_ip}"
+}
+
+output "loadbalancer_instance2_ip" {
+    value = "${module.apache_load_balancer.lb_instance2_ip}"
+}
