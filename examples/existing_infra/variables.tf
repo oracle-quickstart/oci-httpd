@@ -207,7 +207,7 @@ variable "lb_hostname3" {
 
 variable "user_data" {
   description = "User data script for the loadbalancer instance"
-  default = "scripts/user_data.sh"
+  default = ""
 }
 
 variable "subnet_ids" {

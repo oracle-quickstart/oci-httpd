@@ -38,14 +38,14 @@ resource "oci_core_instance" "private" {
   }
 
   provisioner "file" {
-      source        = "./scripts/setup.sh"
+      source        = "./modules/apache_http/scripts/setup.sh"
       destination   = "~/setup.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
         "chmod +x ~/setup.sh",
-        "sudo ~/setup.sh ${var.label_prefix}",
+        "sudo ~/setup.sh ${var.http_port} ${var.label_prefix}",
     ]
   }
 }

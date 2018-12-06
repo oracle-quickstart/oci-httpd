@@ -86,6 +86,8 @@ module "apache_load_balancer" {
   subnet_ids            = ["${var.primary_loadbalancer_subnet}", "${var.standby_loadbalancer_subnet}"]
   display_name          = "${var.loadbalancer_name}"
   shape                 = "${var.loadbalancer_shape}"
+  http_port             = "${var.http_port}"
+  user_data             = "${var.user_data}"
   hostname1             = "${var.lb_hostname1}"
   hostname2             = "${var.lb_hostname2}"
   hostname3             = "${var.lb_hostname3}"
