@@ -130,6 +130,41 @@ variable "http_port" {
     default = "80"
 }
 
+variable "enable_https" {
+    description = "Mention true/false to enable/disable https in the apache server respectively"
+    default = "true"
+}
+
+variable "https_port" {
+    description = "https port for instances"
+    default = "443"
+}
+
+variable "enable_lb_https" {
+    description = "Mention true/false to enable/disable https in the load balancer"
+    default = "false"
+}
+
+variable "host_address" {
+    description = "Host address for the http configuration, e.g) www.example.com"
+    default = ""
+}
+
+variable "loadbalancer_ca_certificate" {
+    description = "CA Certificate for loadbalancer"
+    default = ""
+}
+
+variable "loadbalancer_public_certificate" {
+    description = "Public Certificate for loadbalancer"
+    default = ""
+}
+
+variable "loadbalancer_private_key" {
+    description = "Private Key for loadbalancer"
+    default = ""
+}
+
 variable "loadbalancer_name" {
     description = "Display Name for loadbalancer"
     default = ""

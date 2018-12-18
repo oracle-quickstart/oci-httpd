@@ -1,64 +1,6 @@
 ###############################################
 # Create Load Balancer
 ###############################################
-data "template_file" "lb-config" {
-  template = "${file(var.user_data)}"
-
-  vars {
-    lb_listen_port = "${var.http_port}"
-  }
-}
-
-resource "oci_core_instance" "publiclb1" {
-  availability_domain = "${var.availability_domain1}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "${var.instance1_name}"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id = "${var.instance1_subnet}"
-  }
-
-  metadata {
-    ssh_authorized_keys = "${file(var.ssh_public_key_file)}"
-    user_data = "${base64encode(data.template_file.lb-config.rendered)}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
-}
-
-resource "oci_core_instance" "publiclb2" {
-  availability_domain = "${var.availability_domain2}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "${var.instance2_name}"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id = "${var.instance2_subnet}"
-  }
-
-  metadata {
-    ssh_authorized_keys = "${file(var.ssh_public_key_file)}"
-    user_data = "${base64encode(data.template_file.lb-config.rendered)}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
-}
-
 /* Load Balancer */
 resource "oci_load_balancer" "lb1" {
   shape          = "${var.shape}"
@@ -97,16 +39,61 @@ resource "oci_load_balancer_hostname" "test_hostname3" {
   name             = "hostname3"
 }
 
+resource "tls_private_key" "privkey" {
+  //count     = "${var.lb_ca_certificate == "" ? 1 : 0 }"
+  count     = 1
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "tls_self_signed_cert" "self_cert" {
+  //count           = "${var.lb_ca_certificate == "" ? 1 : 0 }"
+  count           = 1
+  key_algorithm   = "${tls_private_key.privkey.algorithm}"
+  private_key_pem = "${tls_private_key.privkey.private_key_pem}"
+
+  validity_period_hours = 26280
+  early_renewal_hours   = 8760
+  is_ca_certificate     = true
+  allowed_uses          = ["cert_signing"]
+
+  subject {
+    common_name  = "${var.host_address}"
+    //common_name  = "${oci_load_balancer.lb1.ip_addresses[0]}"
+    //organization = "Example, Inc"
+  }
+}
+
+resource "oci_load_balancer_certificate" "lb-cert1" {
+  load_balancer_id   = "${oci_load_balancer.lb1.id}"
+  //ca_certificate     = "${var.lb_ca_certificate == "" ? "${tls_self_signed_cert.self_cert.cert_pem}" : file(var.lb_ca_certificate)}"
+  certificate_name   = "certificate"
+  //private_key        = "${var.lb_private_key == "" ? "${tls_private_key.privkey.private_key_pem}" : file(var.lb_private_key)}"
+  //public_certificate = "${var.lb_public_certificate == "" ? "${tls_self_signed_cert.self_cert.cert_pem}" : file(var.lb_public_certificate)}"
+  private_key        = "${tls_private_key.privkey.private_key_pem}"
+  ca_certificate     = "${tls_self_signed_cert.self_cert.cert_pem}"
+  public_certificate = "${tls_self_signed_cert.self_cert.cert_pem}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "oci_load_balancer_listener" "lb-listener1" {
   load_balancer_id         = "${oci_load_balancer.lb1.id}"
-  name                     = "http"
+  name                     = "${var.enable_https == "true" ? "https" : "http"}"
   default_backend_set_name = "${oci_load_balancer_backend_set.lb-bes1.name}"
   hostname_names           = ["${oci_load_balancer_hostname.test_hostname1.name}", "${oci_load_balancer_hostname.test_hostname2.name}", "${oci_load_balancer_hostname.test_hostname3.name}"]
-  port                     = "${var.http_port}"
+  port                     = "${var.enable_https == "true" ? var.https_port : var.http_port}"
   protocol                 = "HTTP"
 
   connection_configuration {
     idle_timeout_in_seconds = "2"
+  }
+
+  ssl_configuration {
+    certificate_name        = "${oci_load_balancer_certificate.lb-cert1.certificate_name}"
+    verify_peer_certificate = false
   }
 }
 

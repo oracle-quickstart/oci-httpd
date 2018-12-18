@@ -18,10 +18,7 @@ output "loadbalancer_ip" {
     value = "${module.apache_load_balancer.loadbalancer_ip}"
 }
 
-output "loadbalancer_instance1_ip" {
-    value = "${module.apache_load_balancer.lb_instance1_ip}"
+output "ca_certificate" {
+  value = "${module.apache_load_balancer.ca_certificate}"
 }
 
-output "loadbalancer_instance2_ip" {
-    value = "${module.apache_load_balancer.lb_instance2_ip}"
-}

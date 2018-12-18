@@ -1,6 +1,27 @@
 ################################################
 # Create instance
 ################################################
+data "template_file" "apache_setup" {
+  template = "${file(var.scripts)}"
+
+  vars {
+    http_port  = "${var.http_port}"
+  }
+}
+
+data "oci_core_subnet" "subnet" {
+    subnet_id = "${var.subnet_id}"
+}
+
+data "oci_core_instance" "server" {
+    instance_id = "${oci_core_instance.private.id}"
+}
+
+resource "local_file" "setup" {
+    content = "${data.template_file.apache_setup.rendered}"
+    filename = "${path.module}/setup_mod.sh"
+}
+
 resource "oci_core_instance" "private" {
   availability_domain = "${var.availability_domain}"
   compartment_id      = "${var.compartment_ocid}"
@@ -38,14 +59,14 @@ resource "oci_core_instance" "private" {
   }
 
   provisioner "file" {
-      source        = "./modules/apache_http/scripts/setup.sh"
+      source        = "${local_file.setup.filename}"
       destination   = "~/setup.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
         "chmod +x ~/setup.sh",
-        "sudo ~/setup.sh ${var.http_port} ${var.label_prefix}",
+        "sudo ~/setup.sh ${var.label_prefix}",
     ]
   }
 }

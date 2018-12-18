@@ -14,6 +14,8 @@ variable "display_name" {}
 variable "subnet_ids" {type="list"}
 variable "shape" {}
 variable "http_port" {}
+variable "https_port" {}
+variable "enable_https" {}
 variable "ssh_public_key_file" {}
 variable "ssh_private_key_file" {}
 variable "hostname1" {}
@@ -23,3 +25,7 @@ variable "hostname1_ip" {}
 variable "hostname2_ip" {}
 variable "hostname3_ip" {}
 variable "user_data" {}
+variable "lb_ca_certificate" {}
+variable "lb_private_key" {}
+variable "lb_public_certificate" {}
+variable "host_address" {}
