@@ -9,18 +9,6 @@ resource "oci_load_balancer" "lb1" {
   display_name   = "${var.display_name}"
 }
 
-resource "oci_load_balancer_backend_set" "lb-bes1" {
-  name             = "lb-bes1"
-  load_balancer_id = "${oci_load_balancer.lb1.id}"
-  policy           = "ROUND_ROBIN"
-  health_checker {
-    port     = "${var.http_port}"
-    protocol = "HTTP"
-    response_body_regex= ".*"
-    url_path= "/"
-  }
-}
-
 resource "oci_load_balancer_hostname" "test_hostname1" {
   hostname         = "${var.hostname1}"
   load_balancer_id = "${oci_load_balancer.lb1.id}"
@@ -82,7 +70,8 @@ resource "oci_load_balancer_certificate" "lb-cert1" {
 resource "oci_load_balancer_listener" "lb-listener1" {
   load_balancer_id         = "${oci_load_balancer.lb1.id}"
   name                     = "${var.enable_https == "true" ? "https" : "http"}"
-  default_backend_set_name = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  //default_backend_set_name = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  default_backend_set_name = "${var.enable_https == "true" ? oci_load_balancer_backend_set.lb-bes-https.name : oci_load_balancer_backend_set.lb-bes-http.name}"
   hostname_names           = ["${oci_load_balancer_hostname.test_hostname1.name}", "${oci_load_balancer_hostname.test_hostname2.name}", "${oci_load_balancer_hostname.test_hostname3.name}"]
   port                     = "${var.enable_https == "true" ? var.https_port : var.http_port}"
   protocol                 = "HTTP"
@@ -97,11 +86,40 @@ resource "oci_load_balancer_listener" "lb-listener1" {
   }
 }
 
+resource "oci_load_balancer_backend_set" "lb-bes-https" {
+  name             = "lb-bes1"
+  load_balancer_id = "${oci_load_balancer.lb1.id}"
+  policy           = "ROUND_ROBIN"
+  health_checker {
+    port     = "${var.https_port}"
+    protocol = "HTTP"
+    response_body_regex= ".*"
+    url_path= "/"
+  }
+  ssl_configuration {  
+    certificate_name        = "${oci_load_balancer_certificate.lb-cert1.certificate_name}"
+    verify_peer_certificate = false
+  }
+}
+
+resource "oci_load_balancer_backend_set" "lb-bes-http" {
+  name             = "lb-bes2"
+  load_balancer_id = "${oci_load_balancer.lb1.id}"
+  policy           = "ROUND_ROBIN"
+  health_checker {
+    port     = "${var.http_port}"
+    protocol = "HTTP"
+    response_body_regex= ".*"
+    url_path= "/"
+  }
+}
+
 resource "oci_load_balancer_backend" "lb-be1" {
   load_balancer_id = "${oci_load_balancer.lb1.id}"
-  backendset_name  = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  backendset_name  = "${oci_load_balancer_backend_set.lb-bes-http.name}"
   ip_address       = "${var.hostname1_ip}"
-  port             = "${var.http_port}"
+  port           = "${var.http_port}"
+  //port             = "${var.enable_https == "true" ? var.https_port : var.http_port}"
   backup           = false
   drain            = false
   offline          = false
@@ -110,9 +128,11 @@ resource "oci_load_balancer_backend" "lb-be1" {
 
 resource "oci_load_balancer_backend" "lb-be2" {
   load_balancer_id = "${oci_load_balancer.lb1.id}"
-  backendset_name  = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  //backendset_name  = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  backendset_name  = "${oci_load_balancer_backend_set.lb-bes-http.name}"
   ip_address       = "${var.hostname2_ip}"
-  port             = "${var.http_port}"
+  port           = "${var.http_port}"
+  //port             = "${var.enable_https == "true" ? var.https_port : var.http_port}"
   backup           = false
   drain            = false
   offline          = false
@@ -121,9 +141,44 @@ resource "oci_load_balancer_backend" "lb-be2" {
 
 resource "oci_load_balancer_backend" "lb-be3" {
   load_balancer_id = "${oci_load_balancer.lb1.id}"
-  backendset_name  = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  //backendset_name  = "${oci_load_balancer_backend_set.lb-bes1.name}"
+  backendset_name  = "${oci_load_balancer_backend_set.lb-bes-http.name}"
   ip_address       = "${var.hostname3_ip}"
-  port             = "${var.http_port}"
+  port           = "${var.http_port}"
+  //port             = "${var.enable_https == "true" ? var.https_port : var.http_port}"
+  backup           = false
+  drain            = false
+  offline          = false
+  weight           = 1
+}
+
+resource "oci_load_balancer_backend" "https1" {
+  load_balancer_id = "${oci_load_balancer.lb1.id}"
+  backendset_name  = "${oci_load_balancer_backend_set.lb-bes-https.name}"
+  ip_address       = "${var.hostname1_ip}"
+  port             = "${var.https_port}"
+  backup           = false
+  drain            = false
+  offline          = false
+  weight           = 1
+}
+
+resource "oci_load_balancer_backend" "https2" {
+  load_balancer_id = "${oci_load_balancer.lb1.id}"
+  backendset_name  = "${oci_load_balancer_backend_set.lb-bes-https.name}"
+  ip_address       = "${var.hostname2_ip}"
+  port             = "${var.https_port}"
+  backup           = false
+  drain            = false
+  offline          = false
+  weight           = 1
+}
+
+resource "oci_load_balancer_backend" "https3" {
+  load_balancer_id = "${oci_load_balancer.lb1.id}"
+  backendset_name  = "${oci_load_balancer_backend_set.lb-bes-https.name}"
+  ip_address       = "${var.hostname3_ip}"
+  port             = "${var.https_port}"
   backup           = false
   drain            = false
   offline          = false
