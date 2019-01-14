@@ -60,7 +60,6 @@ module "apache_http_server2" {
   cn_name               = "${var.cn_name}"
   ca_cert               = "${var.apache_server_ca_certificate}"
   priv_key              = "${var.apache_server_private_key}"
-  cn_name               = "${var.create_selfsigned_cert == "true" ? var.server_cnname : var.cn_name}"
   ssh_public_key_file   = "${var.ssh_public_key_file}"
   ssh_private_key_file  = "${var.ssh_private_key_file}"
   user_data             = "${var.instance_user_data}"
