@@ -79,8 +79,8 @@ This project is open source. Oracle appreciates any contributions that are made 
 
 ## License
 
-Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
 
 Licensed under the Universal Permissive License 1.0 or Apache License 2.0.
 
-See [LICENSE](/LICENSE.txt) for more details.
+See [LICENSE](../LICENSE.md) for more details.
