@@ -160,6 +160,21 @@ variable "apache_server_private_key" {
     default = ""
 }
 
+variable "cn_name" {
+    description = "CN Name for the tls certificate configuration, e.g) www.example.com"
+    default = ""
+}
+
+variable "server_cnname" {
+    description = "Server CN Name for the tls certificate configuration when create_selfsigned_cert=true"
+    default = ""
+}
+
+variable "create_selfsigned_cert" {
+    description = "Mention true if self signed certificate to be created"
+    default = "false"
+}
+
 variable "host_address" {
     description = "Host address for the http configuration, e.g) www.example.com"
     default = ""

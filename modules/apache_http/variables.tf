@@ -18,6 +18,10 @@ variable "user_data" {}
 variable "http_port" {}
 variable "https_port" {}
 variable "enable_https" {}
-variable "address" {}
+variable "server_cnname" {}
+variable "cn_name" {}
 variable "ca_cert" {}
 variable "priv_key" {}
+variable "create_selfsigned_cert" {}
+variable "selfsigned_priv_key" {}
+variable "selfsigned_ca_cert" {}

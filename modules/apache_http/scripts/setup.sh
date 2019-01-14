@@ -15,7 +15,7 @@ if [ "${enable_https}" == "true" ]; then
   echo 'Apache HTTPs server with openssl ... '
   sudo yum -y install mod_ssl
   sudo yum -y install httpd24-mod_ssl
-  :'sudo openssl req -x509 -nodes -days 3 -subj "/C=US/ST=Ca/L=Sunnydale/CN=${address}" -newkey rsa:1024 -keyout prikey.pem -out cert.pem
+  :'sudo openssl req -x509 -nodes -days 3 -subj "/C=US/ST=Ca/L=Sunnydale/CN=${cn_name}" -newkey rsa:1024 -keyout prikey.pem -out cert.pem
   sudo openssl x509 -in cert.pem -out rootcert.crt
   '
   sudo mkdir /etc/httpd/conf/ssl
@@ -30,7 +30,7 @@ if [ "${enable_https}" == "true" ]; then
     #Listen 443 https\n\
     Listen ${https_port}\n\
     <VirtualHost *:${https_port}>\n\
-        ServerName ${address}\n\
+        ServerName ${cn_name}\n\
         SSLEngine on\n\
         SSLCertificateFile \"/etc/httpd/conf/ssl/cert.pem\"\n\
         SSLCertificateKeyFile \"/etc/httpd/conf/ssl/prikey.pem\"\n\

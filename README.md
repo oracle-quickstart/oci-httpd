@@ -7,6 +7,7 @@ The Apache Http Server Oracle Cloud Infrastructure Module installs a Terraform-b
 1. See the [Oracle Cloud Infrastructure Terraform Provider docs](https://www.terraform.io/docs/providers/oci/index.html) for information about setting up and using the Oracle Cloud Infrastructure Terraform Provider.
 2. An existing VCN with subnets(private and public). The public subnets need internet access in order to download required dependent packages for Apache Http server installations.
 
+![Apache Http Server architecture](https://confluence.oci.oraclecorp.com/rest/gliffy/1.0/embeddedDiagrams/59657898-3d7d-48c3-807d-cb4f338f0142.png)
 
 ## What's a Module?
 A module is a canonical, reusablem definition for how to run a single piece of infrastructure, such as a database or server cluster. Each module is created using Terraform, and includes automated tests, examples, and documentation. It is maintained both by the open source community and companies that provide commercial support.
@@ -32,6 +33,12 @@ module "apache_http" {
   label_prefix          = "_1"
   subnet_id             = "${var.subnet_id}"
   http_port             = "${var.http_port}"
+  https_port            = "${var.https_port}"
+  enable_https          = "${var.enable_https}"
+  cn_name               = "${var.cn_name}"
+  ca_certificate        = "${var.apache_server_ca_certificate}"
+  public_certificate    = "${var.apache_server_public_certificate}"
+  private_key           = "${var.apache_server_private_key}"
   ssh_public_key_file   = "${var.ssh_public_key_file}"
   ssh_private_key_file  = "${var.ssh_private_key_file}"
   user_data             = "${var.user_data}"
@@ -56,6 +63,12 @@ image_id | OCID of an image for an instance to use. For more information, see [O
 shape | Shape to be used on the master instance.
 user_data | Provide your own base64-encoded data to be used by `Cloud-Init` to run custom scripts or provide custom `Cloud-Init` configuration for master instance.
 http_port | Port for HTTP traffic.
+enable_https | Enable HTTPs in the backend Apache HTTP server.
+https_port | Port for HTTPs traffic.
+cn_name | Common Name to be used during tls certificate creation.
+ca_certificate | CA Certificate to be used in backend Apache HTTP server.
+public_certificate | Public Certificate to be used in backend Apache HTTP server.
+private_key| Private Key to be used in backend Apache HTTP server.
 
 
 ## Contributing
