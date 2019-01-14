@@ -7,6 +7,7 @@ The Apache Http Server Oracle Cloud Infrastructure Module installs a Terraform-b
 1. See the [Oracle Cloud Infrastructure Terraform Provider docs](https://www.terraform.io/docs/providers/oci/index.html) for information about setting up and using the Oracle Cloud Infrastructure Terraform Provider.
 2. An existing VCN with subnets(private and public). The public subnets need internet access in order to download required dependent packages for Apache Http server installations.
 
+![Apache Http Server architecture](https://confluence.oci.oraclecorp.com/rest/gliffy/1.0/embeddedDiagrams/59657898-3d7d-48c3-807d-cb4f338f0142.png)
 
 ## What's a Module?
 A module is a canonical, reusablem definition for how to run a single piece of infrastructure, such as a database or server cluster. Each module is created using Terraform, and includes automated tests, examples, and documentation. It is maintained both by the open source community and companies that provide commercial support.
