@@ -35,10 +35,11 @@ module "apache_http" {
   http_port             = "${var.http_port}"
   https_port            = "${var.https_port}"
   enable_https          = "${var.enable_https}"
+  create_selfsigned_cert= "${var.create_selfsigned_cert}"
   cn_name               = "${var.cn_name}"
-  ca_certificate        = "${var.apache_server_ca_certificate}"
-  public_certificate    = "${var.apache_server_public_certificate}"
-  private_key           = "${var.apache_server_private_key}"
+  ca_cert               = "${var.apache_server_ca_certificate}"
+  pub_cert              = "${var.apache_server_public_certificate}"
+  priv_key              = "${var.apache_server_private_key}"
   ssh_public_key_file   = "${var.ssh_public_key_file}"
   ssh_private_key_file  = "${var.ssh_private_key_file}"
   user_data             = "${var.user_data}"
@@ -65,10 +66,11 @@ user_data | Provide your own base64-encoded data to be used by `Cloud-Init` to r
 http_port | Port for HTTP traffic.
 enable_https | Enable HTTPs in the backend Apache HTTP server.
 https_port | Port for HTTPs traffic.
+create_selfsigned_cert | Mention True to create selfsigned certificate else mention false.
 cn_name | Common Name to be used during tls certificate creation.
-ca_certificate | CA Certificate to be used in backend Apache HTTP server.
-public_certificate | Public Certificate to be used in backend Apache HTTP server.
-private_key| Private Key to be used in backend Apache HTTP server.
+ca_cert | CA Certificate to be used in backend Apache HTTP server.
+pub_cert | Public Certificate to be used in backend Apache HTTP server.
+priv_key| Private Key to be used in backend Apache HTTP server.
 
 
 ## Contributing
