@@ -75,8 +75,10 @@ priv_key| Private Key to be used in backend Apache HTTP server.
 Possible combinations of Apache HTTP server configuration:
 ---
 1. HTTP only
+
  Required variables declaration:
  * enable_https | false 
+
  Below variables need not be populated with values.
  * https_port
  * create_selfsigned_cert
@@ -86,10 +88,12 @@ Possible combinations of Apache HTTP server configuration:
  * priv_key
 
 2. HTTPs with self-signed certificate
+
  Required variables declaration:
  * enable_https | true
  * https_port | if not defined, default port will be configured.
  * create_selfsigned_cert | true
+
  Below variables need not be populated with values.
  * cn_name
  * ca_cert
@@ -97,6 +101,7 @@ Possible combinations of Apache HTTP server configuration:
  * priv_key
   
 3. HTTPs with user defined ca_certificate
+
  Required variables declaration:
  * enable_https | true
  * https_port | if not defined, default port will be configured.
