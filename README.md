@@ -72,10 +72,49 @@ ca_cert | CA Certificate to be used in backend Apache HTTP server.
 pub_cert | Public Certificate to be used in backend Apache HTTP server.
 priv_key| Private Key to be used in backend Apache HTTP server.
 
+Possible combinations of Apache HTTP server configuration:
+---
+1. HTTP only
+ Required variables declaration:
+ * enable_https | false 
+ Below variables need not be populated with values.
+ * https_port
+ * create_selfsigned_cert
+ * cn_name
+ * ca_cert
+ * pub_cert
+ * priv_key
+
+2. HTTPs with self-signed certificate
+ Required variables declaration:
+ * enable_https | true
+ * https_port | if not defined, default port will be configured.
+ * create_selfsigned_cert | true
+ Below variables need not be populated with values.
+ * cn_name
+ * ca_cert
+ * pub_cert
+ * priv_key
+  
+3. HTTPs with user defined ca_certificate
+ Required variables declaration:
+ * enable_https | true
+ * https_port | if not defined, default port will be configured.
+ * create_selfsigned_cert | false
+ * cn_name | Common Name to be used during tls certificate creation.
+ * ca_cert | CA Certificate to be used in backend Apache HTTP server.
+ * pub_cert | Public Certificate to be used in backend Apache HTTP server.
+ * priv_key| Private Key to be used in backend Apache HTTP server.
+
 
 ## Contributing
 
 This project is open source. Oracle appreciates any contributions that are made by the open source community.
+
+## Security
+
+	https://httpd.apache.org/docs/2.4/misc/security_tips.html
+	https://www.owasp.org/index.php/SCG_WS_Apache
 
 ## License
 

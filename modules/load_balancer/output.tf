@@ -3,13 +3,13 @@ output "loadbalancer_ip" {
 }
 
 output "private_key" {
-  value = "${tls_private_key.privkey.private_key_pem}"
+  value = "${ join(" ", tls_private_key.privkey.*.private_key_pem) }"
 }
 
 output "ca_certificate" {
-  value = "${tls_self_signed_cert.self_cert.cert_pem}"
+  value = "${ join(" ", tls_self_signed_cert.self_cert.*.cert_pem) }"
 }
 
 output "public_certificate" {
-  value = "${tls_self_signed_cert.self_cert.cert_pem}"
+  value = "${ join(" ", tls_self_signed_cert.self_cert.*.cert_pem) }"
 }
