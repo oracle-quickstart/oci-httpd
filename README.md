@@ -75,7 +75,6 @@ priv_key| Private Key to be used in backend Apache HTTP server.
 ## Possible combinations of Apache HTTP server configuration:
 
 1. HTTP only
----
 
  Required variables declaration:
  * enable_https | false 
@@ -88,8 +87,8 @@ priv_key| Private Key to be used in backend Apache HTTP server.
  * pub_cert
  * priv_key
 
-2. HTTPs with self-signed certificate
 ---
+2. HTTPs with self-signed certificate
 
  Required variables declaration:
  * enable_https | true
@@ -102,8 +101,8 @@ priv_key| Private Key to be used in backend Apache HTTP server.
  * pub_cert
  * priv_key
   
+---  
 3. HTTPs with user defined ca_certificate
----
 
  Required variables declaration:
  * enable_https | true
@@ -113,7 +112,7 @@ priv_key| Private Key to be used in backend Apache HTTP server.
  * ca_cert | CA Certificate to be used in backend Apache HTTP server.
  * pub_cert | Public Certificate to be used in backend Apache HTTP server.
  * priv_key| Private Key to be used in backend Apache HTTP server.
-
+---
 
 ## Contributing
 
