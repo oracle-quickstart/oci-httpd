@@ -1,233 +1,147 @@
-################################################
-# Create instances (bastion, public & private)
-################################################
-resource "oci_core_instance" "bastion" {
-  availability_domain = "${local.ad3}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "apache-bastion"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id[var.region]}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id = "${oci_core_subnet.bastion.id}"
-  }
-
-  metadata {
-    ssh_authorized_keys = "${var.ssh_public_key}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
+#########################################################
+# Apache HTTP server deployment
+#########################################################
+provider "oci" {
+  region           = "${var.region}"
+  tenancy_ocid     = "${var.tenancy_ocid}"
+  user_ocid        = "${var.user_ocid}"
+  fingerprint      = "${var.fingerprint}"
+  private_key_path = "${var.private_key_path}"
 }
 
-resource "oci_core_instance" "publiclb1" {
-  availability_domain = "${local.ad1}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "apache-public-lb1"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id[var.region]}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id = "${oci_core_subnet.public1.id}"
-  }
-
-  metadata {
-    ssh_authorized_keys = "${var.ssh_public_key}"
-    user_data = "${base64encode(var.user-data)}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
+module "network" {
+  source                = "./modules/network"
+  tenancy_ocid          = "${var.tenancy_ocid}"
+  subnet_cidr_offset    = "${var.subnet_cidr_offset}"
+  vcn_cidr              = "${var.vcn_cidr}"
+  compartment_ocid      = "${var.compartment_ocid}"
 }
 
-resource "oci_core_instance" "publiclb2" {
-  availability_domain = "${local.ad2}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "apache-public-lb2"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id[var.region]}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id = "${oci_core_subnet.public2.id}"
-  }
-
-  metadata {
-    ssh_authorized_keys = "${var.ssh_public_key}"
-    user_data = "${base64encode(var.user-data)}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
+module "bastion" {
+  source                = "./modules/bastion"
+  availability_domain   = "${var.bastion_ad}"
+  compartment_ocid      = "${var.compartment_ocid}"
+  display_name          = "${var.bastion_hostname}"
+  image_id              = "${var.bastion_image_id}"
+  shape                 = "${var.bastion_shape}"
+  subnet_id             = "${var.bastion_subnet_id}"
+  ssh_public_key_file   = "${var.bastion_public_key_file}"
+  ssh_private_key_file  = "${var.bastion_private_key_file}"
 }
 
-resource "oci_core_instance" "private1" {
-  availability_domain = "${local.ad1}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "apache_instance1"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id[var.region]}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id        = "${oci_core_subnet.private1.id}"
-    assign_public_ip = false
-  }
-
-  metadata {
-    ssh_authorized_keys = "${var.ssh_public_key}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
-
-  connection = {
-      type        = "ssh"
-      host        = "${self.private_ip}"
-      timeout     = "5m"
-      user        = "opc"
-      private_key = "${file(var.ssh_private_key_file)}"
-
-      bastion_host        = "${oci_core_instance.bastion.public_ip}"
-      bastion_user        = "opc"
-      bastion_private_key = "${file(var.ssh_private_key_file)}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-        "echo 'This instance is for apache installation'",
-        "sudo service httpd status",
-        "sudo yum -y install httpd",
-        "sudo service httpd start",
-        "sudo service httpd enable",
-        "sudo service httpd status",
-        "sudo firewall-cmd --zone=public --permanent --add-port=80/tcp",
-        "sudo firewall-cmd --reload",
-        "sudo sh -c 'echo \"Hello world 1\" > /var/www/html/index.html'",
-        "echo 'check done'",
-    ]
-  }
+module "apache_http_server1" {
+  source                = "./modules/apache_http"
+  availability_domain   = "${var.instance_ad1}"
+  compartment_ocid      = "${var.compartment_ocid}"
+  display_name          = "${var.instance_name}"
+  image_id              = "${var.instance_image_id}"
+  shape                 = "${var.instance_shape}"
+  label_prefix          = "_1"
+  subnet_id             = "${var.instance_subnet1_id}"
+  http_port             = "${var.http_port}"
+  https_port            = "${var.https_port}"
+  enable_https          = "${var.enable_https}"
+  create_selfsigned_cert= "${var.create_selfsigned_cert}"
+  server_cnname         = "${module.apache_load_balancer.loadbalancer_ip[0]}"
+  selfsigned_ca_cert    = "${module.apache_load_balancer.ca_certificate}"
+  selfsigned_priv_key   = "${module.apache_load_balancer.private_key}"
+  cn_name               = "${var.cn_name}"
+  ca_cert               = "${var.apache_server_ca_certificate}"
+  priv_key              = "${var.apache_server_private_key}"
+  ssh_public_key_file   = "${var.ssh_public_key_file}"
+  ssh_private_key_file  = "${var.ssh_private_key_file}"
+  user_data             = "${var.instance_user_data}"
+  scripts               = "${var.instance_scripts}"
+  bastion_host          = "${module.bastion.public_ip}"
+  bastion_user          = "${var.bastion_user}"
+  bastion_private_key   = "${var.bastion_private_key_file}"
 }
 
-resource "oci_core_instance" "private2" {
-  availability_domain = "${local.ad2}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "apache_instance2"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id[var.region]}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id        = "${oci_core_subnet.private2.id}"
-    assign_public_ip = false
-  }
-
-  metadata {
-    ssh_authorized_keys = "${var.ssh_public_key}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
-
-  connection = {
-      type        = "ssh"
-      host        = "${self.private_ip}"
-      timeout     = "5m"
-      user        = "opc"
-      private_key = "${file(var.ssh_private_key_file)}"
-
-      bastion_host        = "${oci_core_instance.bastion.public_ip}"
-      bastion_user        = "opc"
-      bastion_private_key = "${file(var.ssh_private_key_file)}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-        "echo 'This instance is for apache installation'",
-        "sudo service httpd status",
-        "sudo yum -y install httpd",
-        "sudo service httpd start",
-        "sudo service httpd enable",
-        "sudo service httpd status",
-        "sudo firewall-cmd --zone=public --permanent --add-port=80/tcp",
-        "sudo firewall-cmd --reload",
-        "sudo sh -c 'echo \"Hello world 2\" > /var/www/html/index.html'",
-        "echo 'check done'",
-    ]
-  }
+module "apache_http_server2" {
+  source                = "./modules/apache_http"
+  availability_domain   = "${var.instance_ad2}"
+  compartment_ocid      = "${var.compartment_ocid}"
+  display_name          = "${var.instance_name}"
+  image_id              = "${var.instance_image_id}"
+  shape                 = "${var.instance_shape}"
+  label_prefix          = "_2"
+  subnet_id             = "${var.instance_subnet2_id}"
+  http_port             = "${var.http_port}"
+  https_port            = "${var.https_port}"
+  enable_https          = "${var.enable_https}"
+  create_selfsigned_cert= "${var.create_selfsigned_cert}"
+  server_cnname         = "${module.apache_load_balancer.loadbalancer_ip[0]}"
+  selfsigned_ca_cert    = "${module.apache_load_balancer.ca_certificate}"
+  selfsigned_priv_key   = "${module.apache_load_balancer.private_key}"
+  cn_name               = "${var.cn_name}"
+  ca_cert               = "${var.apache_server_ca_certificate}"
+  priv_key              = "${var.apache_server_private_key}"
+  cn_name               = "${var.create_selfsigned_cert == "true" ? var.server_cnname : var.cn_name}"
+  ssh_public_key_file   = "${var.ssh_public_key_file}"
+  ssh_private_key_file  = "${var.ssh_private_key_file}"
+  user_data             = "${var.instance_user_data}"
+  scripts               = "${var.instance_scripts}"
+  bastion_host          = "${module.bastion.public_ip}"
+  bastion_user          = "${var.bastion_user}"
+  bastion_private_key   = "${var.bastion_private_key_file}"
 }
 
-resource "oci_core_instance" "private3" {
-  availability_domain = "${local.ad3}"
-  compartment_id      = "${var.compartment_ocid}"
-  display_name        = "apache_instance3"
-  shape               = "${var.instance_shape}"
-
-  source_details {
-    source_id   = "${var.instance_image_id[var.region]}"
-    source_type = "image"
-  }
-
-  create_vnic_details {
-    subnet_id        = "${oci_core_subnet.private3.id}"
-    assign_public_ip = false
-  }
-
-  metadata {
-    ssh_authorized_keys = "${var.ssh_public_key}"
-  }
-
-  timeouts {
-    create = "10m"
-  }
-
-  connection = {
-      type        = "ssh"
-      host        = "${self.private_ip}"
-      timeout     = "5m"
-      user        = "opc"
-      private_key = "${file(var.ssh_private_key_file)}"
-
-      bastion_host        = "${oci_core_instance.bastion.public_ip}"
-      bastion_user        = "opc"
-      bastion_private_key = "${file(var.ssh_private_key_file)}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-        "echo 'This instance is for apache installation'",
-        "sudo service httpd status",
-        "sudo yum -y install httpd",
-        "sudo service httpd start",
-        "sudo service httpd enable",
-        "sudo service httpd status",
-        "sudo firewall-cmd --zone=public --permanent --add-port=80/tcp",
-        "sudo firewall-cmd --reload",
-        "sudo sh -c 'echo \"Hello world 3\" > /var/www/html/index.html'",
-        "echo 'check done'",
-    ]
-  }
+module "apache_http_server3" {
+  source                = "./modules/apache_http"
+  availability_domain   = "${var.instance_ad3}"
+  compartment_ocid      = "${var.compartment_ocid}"
+  display_name          = "${var.instance_name}"
+  image_id              = "${var.instance_image_id}"
+  shape                 = "${var.instance_shape}"
+  label_prefix          = "_3"
+  subnet_id             = "${var.instance_subnet3_id}"
+  http_port             = "${var.http_port}"
+  https_port            = "${var.https_port}"
+  enable_https          = "${var.enable_https}"
+  create_selfsigned_cert= "${var.create_selfsigned_cert}"
+  server_cnname         = "${module.apache_load_balancer.loadbalancer_ip[0]}"
+  selfsigned_ca_cert    = "${module.apache_load_balancer.ca_certificate}"
+  selfsigned_priv_key   = "${module.apache_load_balancer.private_key}"
+  cn_name               = "${var.cn_name}"
+  ca_cert               = "${var.apache_server_ca_certificate}"
+  priv_key              = "${var.apache_server_private_key}"
+  ssh_public_key_file   = "${var.ssh_public_key_file}"
+  ssh_private_key_file  = "${var.ssh_private_key_file}"
+  user_data             = "${var.instance_user_data}"
+  scripts               = "${var.instance_scripts}"
+  bastion_host          = "${module.bastion.public_ip}"
+  bastion_user          = "${var.bastion_user}"
+  bastion_private_key   = "${var.bastion_private_key_file}"
 }
 
+module "apache_load_balancer" {
+  source                = "./modules/load_balancer"
+  compartment_ocid      = "${var.compartment_ocid}"
+  availability_domain1  = "${var.primary_loadbalancer_ad}"
+  availability_domain2  = "${var.standby_loadbalancer_ad}"
+  instance1_name        = "${var.primary_loadbalancer_name}"
+  instance1_subnet      = "${var.primary_loadbalancer_subnet}"
+  instance2_name        = "${var.standby_loadbalancer_name}"
+  instance2_subnet      = "${var.standby_loadbalancer_subnet}"
+  instance_shape        = "${var.loadbalancer_instance_shape}"
+  instance_image_id     = "${var.loadbalancer_instance_image_id}"
+  ssh_public_key_file   = "${var.loadbalancer_ssh_public_key_file}"
+  ssh_private_key_file  = "${var.loadbalancer_ssh_private_key_file}"
+  subnet_ids            = ["${var.primary_loadbalancer_subnet}", "${var.standby_loadbalancer_subnet}"]
+  display_name          = "${var.loadbalancer_name}"
+  shape                 = "${var.loadbalancer_shape}"
+  user_data             = "${var.user_data}"
+  http_port             = "${var.http_port}"
+  https_port            = "${var.https_port}"
+  enable_https          = "${var.enable_lb_https}"
+  lb_ca_certificate     = "${var.loadbalancer_ca_certificate}"
+  lb_public_certificate = "${var.loadbalancer_public_certificate}"
+  lb_private_key        = "${var.loadbalancer_private_key}"
+  host_address          = "${module.apache_load_balancer.loadbalancer_ip[0]}"
+  hostname1             = "${var.lb_hostname1}"
+  hostname2             = "${var.lb_hostname2}"
+  hostname3             = "${var.lb_hostname3}"
+  hostname1_ip          = "${module.apache_http_server1.private_ip}"
+  hostname2_ip          = "${module.apache_http_server2.private_ip}"
+  hostname3_ip          = "${module.apache_http_server3.private_ip}"
+}
