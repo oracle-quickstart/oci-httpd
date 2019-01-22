@@ -281,9 +281,3 @@ variable "subnet_ids" {
   default = []
 }
 
-/*locals {
-  tcp_protocol  = "6"
-  all_protocols = "all"
-  anywhere      = "0.0.0.0/0"
-}*/
-
