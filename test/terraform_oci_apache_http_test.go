@@ -64,10 +64,10 @@ func TestModuleApacheHttpsQuickStart(t *testing.T) {
 func TestModuleApacheHttpExistingInfra(t *testing.T) {
 	terraformDir := "../../examples/existing_infra"
 
-        logger.Log(t, "Set Environment variables ...")
-	setEnvironmentvariables(t, terraformOptions)
-
 	terraformOptions := configureTerraformOptions(t, terraformDir)
+
+        logger.Log(t, "Set Enable HTTPs false ...")
+	setEnableHTTPsFalse(t, terraformOptions)
 
 	test_structure.RunTestStage(t, "init", func() {
 		logger.Log(t, "terraform init ...")
@@ -92,6 +92,9 @@ func TestModuleApacheHttpsExistingInfra(t *testing.T) {
 	terraformDir := "../../examples/existing_infra"
 
 	terraformOptions := configureTerraformOptions(t, terraformDir)
+
+        logger.Log(t, "Set Enable HTTPs true ...")
+	setEnableHTTPsTrue(t, terraformOptions)
 
 	test_structure.RunTestStage(t, "init", func() {
 		logger.Log(t, "terraform init ...")
@@ -172,5 +175,13 @@ func validateByHTTPs(t *testing.T, terraformOptions *terraform.Options) {
 	assert.True(t, strings.Contains(result, "index.html"))
 }
 
-func setEnvironmentVariables(t *testing.T, terraformOptions *terraform.Options) {
+func setEnableHTTPsFalse(t *testing.T, terraformOptions *terraform.Options) {
+       os.Setenv("TF_VAR_enable_https", "false")
+       os.Setenv("TF_VAR_enable_lb_https", "false")
+       os.Setenv("TF_VAR_create_selfsigned_cert", "false")
+}
+
+func setEnableHTTPsTrue(t *testing.T, terraformOptions *terraform.Options) {
+       os.Setenv("TF_VAR_enable_https", "true")
+       os.Setenv("TF_VAR_enable_lb_https", "true")
 }
