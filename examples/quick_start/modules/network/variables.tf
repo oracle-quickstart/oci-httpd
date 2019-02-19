@@ -4,15 +4,15 @@
 variable "vcn_cidr" {
     default = "10.0.0.0/16"
 }
+variable "subnet_cidr_offset" {
+    default = 5
+}
+variable "region" {}
 variable "compartment_ocid" {}
 variable "tenancy_ocid" {}
-variable "subnet_cidr_offset" {
-    default = "5"
-}
-
-data "oci_identity_availability_domains" "ads" {
-  compartment_id = "${var.tenancy_ocid}"
-}
+variable "user_ocid" {}
+variable "fingerprint" {}
+variable "private_key_path" {}
 
 locals {
   bastion_subnet_prefix = "${cidrsubnet(var.vcn_cidr, var.subnet_cidr_offset, 0)}"

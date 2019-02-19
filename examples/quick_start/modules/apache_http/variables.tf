@@ -14,7 +14,6 @@ variable "bastion_user" {}
 variable "bastion_private_key" {}
 variable "scripts" {}
 variable "label_prefix" {}
-variable "user_data" {}
 variable "http_port" {}
 variable "https_port" {}
 variable "enable_https" {}

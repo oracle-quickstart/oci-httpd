@@ -5,7 +5,7 @@
 resource "oci_load_balancer" "lb1" {
   shape          = "${var.shape}"
   compartment_id = "${var.compartment_ocid}"
-  subnet_ids     = "${var.subnet_ids}"
+  subnet_ids     = ["${var.subnet_id1}", "${var.subnet_id2}"]
   display_name   = "${var.display_name}"
 }
 

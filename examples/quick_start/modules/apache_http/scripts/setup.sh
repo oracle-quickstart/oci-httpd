@@ -30,7 +30,7 @@ if [ "${enable_https}" == "true" ]; then
     #Listen 443 https\n\
     Listen ${https_port}\n\
     <VirtualHost *:${https_port}>\n\
-        ServerName ${address}\n\
+        ServerName ${cn_name}\n\
         SSLEngine on\n\
         SSLCertificateFile \"/etc/httpd/conf/ssl/cert.pem\"\n\
         SSLCertificateKeyFile \"/etc/httpd/conf/ssl/prikey.pem\"\n\

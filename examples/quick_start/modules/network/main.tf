@@ -1,11 +1,23 @@
 ############################################
 # Create VCN
 ############################################
+provider "oci" {
+  region           = "${var.region}"
+  tenancy_ocid     = "${var.tenancy_ocid}"
+  user_ocid        = "${var.user_ocid}"
+  fingerprint      = "${var.fingerprint}"
+  private_key_path = "${var.private_key_path}"
+}
+
 resource "oci_core_virtual_network" "apache_vcn" {
   cidr_block     = "${var.vcn_cidr}"
   dns_label      = "apvcn"
   compartment_id = "${var.compartment_ocid}"
   display_name   = "apache_vcn"
+}
+
+data "oci_identity_availability_domains" "ads" {
+  compartment_id = "${var.tenancy_ocid}"
 }
 
 ############################################

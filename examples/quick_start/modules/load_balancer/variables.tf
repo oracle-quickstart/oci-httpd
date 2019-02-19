@@ -3,7 +3,8 @@
 #########################################################
 variable "compartment_ocid" {}
 variable "display_name" {}
-variable "subnet_ids" {type="list"}
+variable "subnet_id1" {}
+variable "subnet_id2" {}
 variable "shape" {}
 variable "http_port" {}
 variable "https_port" {}

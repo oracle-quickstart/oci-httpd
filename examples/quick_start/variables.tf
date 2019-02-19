@@ -3,56 +3,41 @@
 ###############################################
 variable "region" {
     description = "Region where Compartment OCID resides."
-    default = ""
 }
 
 variable "compartment_ocid" {
     description = "Compartment OCID when VCN will be created."
-    default = ""
 }
 
 variable "tenancy_ocid" {
     description = "Tenancy OCID when VCN will be created."
-    default = ""
 }
 
 variable "user_ocid" {
     description = "User OCID when VCN will be created."
-    default = ""
 }
 
 variable "private_key_path" {
     description = "private key path when VCN will be created."
-    default = ""
 }
 
 variable "fingerprint" {
     description = "Fingerprint when VCN will be created."
-    default = ""
 }
 
 variable "vcn_cidr" {
     description = "Define CIDR for the vcn"
-    default = ""
+    default = "10.0.0.0/16"
 }
 
 variable "subnet_cidr_offset" {
     description = "Define subnet CIDR offset for the vcn"
-    default = ""
+    default = "5"
 }
 
 variable "num_http_server" {
     description = "Number of HTTP server to be deployed"
     default = 3
-}
-
-variable "bastion_ad" {
-    default = ""
-}
-
-variable "bastion_subnet_id" {
-    description = "Subnet on which bastion will be created"
-    default = ""
 }
 
 variable "bastion_hostname" {
@@ -67,12 +52,10 @@ variable "bastion_user" {
 
 variable "bastion_public_key_file" {
     description = "Public key file for bastion login"
-    default = ""
 }
 
 variable "bastion_private_key_file" {
     description = "Private key file for bastion login"
-    default = ""
 }
 
 variable "bastion_image_id" {
@@ -87,26 +70,11 @@ variable "bastion_shape" {
 
 variable "ssh_public_key_file" {
   description = "Public SSH keys for the default user on the instance."
-  default     = ""
+  default = ""
 }
 
 variable "ssh_private_key_file" {
   description = "Private SSH keys file path to login into the instance."
-  default     = ""
-}
-
-variable "instance_ad1" {
-  description = "Availability domain for instance1."
-  default     = ""
-}
-
-variable "instance_ad2" {
-  description = "Availability domain for instance2."
-  default     = ""
-}
-
-variable "instance_ad3" {
-  description = "Availability domain for instance3."
   default     = ""
 }
 
@@ -120,21 +88,6 @@ variable "instance_shape" {
     default = ""
 }
 
-variable "instance_subnet1_id" {
-    description = "Subnet1 prefix on which instances will be created"
-    default = ""
-}
-
-variable "instance_subnet2_id" {
-    description = "Subnet2 prefix on which instances will be created"
-    default = ""
-}
-
-variable "instance_subnet3_id" {
-    description = "Subnet3 prefix on which instances will be created"
-    default = ""
-}
-
 variable "instance_name" {
     description = "Name prefix for instances"
     default = ""
@@ -142,11 +95,6 @@ variable "instance_name" {
 
 variable "instance_scripts" {
     description = "Scripts to run on instances"
-    default = ""
-}
-
-variable "instance_user_data" {
-    description = "User data to run on instances"
     default = ""
 }
 
@@ -235,11 +183,6 @@ variable "primary_loadbalancer_ad" {
     default = ""
 }
 
-variable "primary_loadbalancer_subnet" {
-    description = "Subnet on which primary loadbalancer will be created"
-    default = ""
-}
-
 variable "primary_loadbalancer_name" {
     description = "Display Name for primary loadbalancer"
     default = ""
@@ -247,11 +190,6 @@ variable "primary_loadbalancer_name" {
 
 variable "standby_loadbalancer_ad" {
     description = "Availability Domain for standby loadbalancer"
-    default = ""
-}
-
-variable "standby_loadbalancer_subnet" {
-    description = "Subnet on which standby loadbalancer will be created"
     default = ""
 }
 
@@ -270,16 +208,6 @@ variable "loadbalancer_instance_image_id" {
   default     = ""
 }
 
-variable "loadbalancer_ssh_public_key_file" {
-  description = "Public SSH keys for the default user on the loadbalancer instance."
-  default     = ""
-}
-
-variable "loadbalancer_ssh_private_key_file" {
-  description = "Private SSH keys file path to login into the loadbalancer instance."
-  default     = ""
-}
-
 variable "lb_hostname1" {
   description = "Hostname for loadbalancer instance1 to use in backendset"
   default     = ""
@@ -294,21 +222,4 @@ variable "lb_hostname3" {
   description = "Hostname for loadbalancer instance3 to use in backendset"
   default     = ""
 }
-
-variable "user_data" {
-  description = "User data script for the loadbalancer instance"
-  default = ""
-}
-
-variable "subnet_ids" {
-  type = "list"
-  description = "Subnet IDs for the load balancer"
-  default = []
-}
-
-/*locals {
-  tcp_protocol  = "6"
-  all_protocols = "all"
-  anywhere      = "0.0.0.0/0"
-}*/
 

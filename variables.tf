@@ -120,11 +120,6 @@ variable "instance_scripts" {
     default = ""
 }
 
-variable "instance_user_data" {
-    description = "User data to run on instances"
-    default = ""
-}
-
 variable "http_port" {
     description = "http port for instances"
     default = "80"
