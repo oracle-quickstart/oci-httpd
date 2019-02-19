@@ -240,16 +240,6 @@ variable "loadbalancer_instance_image_id" {
   default     = ""
 }
 
-variable "loadbalancer_ssh_public_key_file" {
-  description = "Public SSH keys for the default user on the loadbalancer instance."
-  default     = ""
-}
-
-variable "loadbalancer_ssh_private_key_file" {
-  description = "Private SSH keys file path to login into the loadbalancer instance."
-  default     = ""
-}
-
 variable "lb_hostname1" {
   description = "Hostname for loadbalancer instance1 to use in backendset"
   default     = ""
@@ -263,11 +253,6 @@ variable "lb_hostname2" {
 variable "lb_hostname3" {
   description = "Hostname for loadbalancer instance3 to use in backendset"
   default     = ""
-}
-
-variable "user_data" {
-  description = "User data script for the loadbalancer instance"
-  default = ""
 }
 
 variable "subnet_ids" {

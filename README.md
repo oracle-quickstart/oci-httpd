@@ -42,7 +42,6 @@ module "apache_http" {
   priv_key              = "${var.apache_server_private_key}"
   ssh_public_key_file   = "${var.ssh_public_key_file}"
   ssh_private_key_file  = "${var.ssh_private_key_file}"
-  user_data             = "${var.user_data}"
   scripts               = "${var.scripts}"
   bastion_host          = "${var.bastion.public_ip}"
   bastion_user          = "${var.bastion_user}"
@@ -62,7 +61,6 @@ subnet_id | OCID of the master subnet in which to create the VNIC.
 display_name | Name of the Http server instance.
 image_id | OCID of an image for an instance to use. For more information, see [Oracle Cloud Infrastructure: Images](https://docs.cloud.oracle.com/iaas/images/).
 shape | Shape to be used on the master instance.
-user_data | Provide your own base64-encoded data to be used by `Cloud-Init` to run custom scripts or provide custom `Cloud-Init` configuration for master instance.
 http_port | Port for HTTP traffic.
 enable_https | Enable HTTPs in the backend Apache HTTP server.
 https_port | Port for HTTPs traffic.
