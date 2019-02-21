@@ -2,8 +2,13 @@
 # Define load_balancer variables
 #########################################################
 variable "compartment_ocid" {}
+
 variable "display_name" {}
-variable "subnet_ids" {type="list"}
+
+variable "subnet_ids" {
+  type = "list"
+}
+
 variable "shape" {}
 variable "http_port" {}
 variable "https_port" {}

@@ -135,14 +135,14 @@ resource "oci_core_security_list" "secrule1" {
   vcn_id         = "${oci_core_virtual_network.apache_vcn.id}"
 
   ingress_security_rules = [{
-      tcp_options {
-        "min" = 22
-        "max" = 22
-        }
+    tcp_options {
+      "min" = 22
+      "max" = 22
+    }
 
-      source   = "${local.anywhere}"
-      protocol = "${local.tcp_protocol}"
-    },
+    source   = "${local.anywhere}"
+    protocol = "${local.tcp_protocol}"
+  },
     {
       tcp_options {
         "max" = 80
@@ -157,19 +157,18 @@ resource "oci_core_security_list" "secrule1" {
   egress_security_rules = [{
     destination = "${local.anywhere}"
     protocol    = "${local.all_protocols}"
-    },
+  },
     {
       tcp_options {
         "max" = 80
         "min" = 80
       }
 
-      protocol = "${local.tcp_protocol}"
-      destination   = "${local.anywhere}"
+      protocol    = "${local.tcp_protocol}"
+      destination = "${local.anywhere}"
     },
   ]
 }
-
 
 resource "oci_core_security_list" "secrule2" {
   compartment_id = "${var.compartment_ocid}"
@@ -187,14 +186,14 @@ resource "oci_core_security_list" "secrule2" {
   }*/
 
   ingress_security_rules = [{
-      tcp_options {
-        "min" = 22
-        "max" = 22
-        }
+    tcp_options {
+      "min" = 22
+      "max" = 22
+    }
 
-      source   = "${local.anywhere}"
-      protocol = "${local.tcp_protocol}"
-    },
+    source   = "${local.anywhere}"
+    protocol = "${local.tcp_protocol}"
+  },
     {
       tcp_options {
         "max" = 80
@@ -210,7 +209,6 @@ resource "oci_core_security_list" "secrule2" {
     protocol    = "${local.all_protocols}"
   }
 }
-
 
 ############################################
 # Create subnet
@@ -294,5 +292,3 @@ resource "oci_core_subnet" "public2" {
   dns_label                  = "public2"
   prohibit_public_ip_on_vnic = false
 }
-
-

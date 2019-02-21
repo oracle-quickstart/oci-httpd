@@ -33,4 +33,3 @@ output "ad2" {
 output "ad3" {
   value = "${oci_core_subnet.private3.availability_domain}"
 }
-

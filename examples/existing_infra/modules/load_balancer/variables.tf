@@ -2,6 +2,7 @@
 # Define load_balancer variables
 #########################################################
 variable "compartment_ocid" {}
+
 variable "availability_domain1" {}
 variable "availability_domain2" {}
 variable "instance1_name" {}
@@ -11,7 +12,11 @@ variable "instance2_subnet" {}
 variable "instance_shape" {}
 variable "instance_image_id" {}
 variable "display_name" {}
-variable "subnet_ids" {type="list"}
+
+variable "subnet_ids" {
+  type = "list"
+}
+
 variable "shape" {}
 variable "http_port" {}
 variable "https_port" {}

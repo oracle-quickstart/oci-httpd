@@ -2,6 +2,7 @@
 # Define instance variables
 #########################################################
 variable "availability_domain" {}
+
 variable "compartment_ocid" {}
 variable "display_name" {}
 variable "image_id" {}

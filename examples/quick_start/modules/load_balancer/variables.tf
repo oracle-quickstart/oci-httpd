@@ -2,6 +2,7 @@
 # Define load_balancer variables
 #########################################################
 variable "compartment_ocid" {}
+
 variable "display_name" {}
 variable "subnet_id1" {}
 variable "subnet_id2" {}
