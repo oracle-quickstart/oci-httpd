@@ -1,13 +1,13 @@
 # Oracle Cloud Infrastructure Apache HTTP Server Terraform Module
 
 ## About
-The Apache Http Server Oracle Cloud Infrastructure Module installs a Terraform-based Apache Http server on Oracle Cloud Infrastructure (OCI). An apache http server module typically involves installing three http server on different availablity domains with load balancer.
+The Apache Http Server Oracle Cloud Infrastructure Module installs a Terraform-based Apache Http server on Oracle Cloud Infrastructure (OCI). An apache http server module typically involves installing three http servers on different availablity domains with load balancer.
 
 ## Prerequisites
 1. See the [Oracle Cloud Infrastructure Terraform Provider docs](https://www.terraform.io/docs/providers/oci/index.html) for information about setting up and using the Oracle Cloud Infrastructure Terraform Provider.
 2. An existing VCN with subnets(private and public). The public subnets need internet access in order to download required dependent packages for Apache Http server installations.
 
-![Apache Http Server architecture](https://confluence.oci.oraclecorp.com/rest/gliffy/1.0/embeddedDiagrams/59657898-3d7d-48c3-807d-cb4f338f0142.png)
+![Apache Http Server architecture](examples/quick_start/images/Apache_module_Diagram.png)
 
 ## What's a Module?
 A module is a canonical, reusablem definition for how to run a single piece of infrastructure, such as a database or server cluster. Each module is created using Terraform, and includes automated tests, examples, and documentation. It is maintained both by the open source community and companies that provide commercial support.
@@ -16,7 +16,7 @@ Instead of figuring out the details of how to run a piece of infrastructure from
 
 ## How to use this Module
 Each Module has the following folder structure:
-* [root](): Contains a root module which calls bastion, apache_http and load_balancer sub-modules respcetively to create a Apache Http server with load balancer in OCI.
+* [root](): Contains a root module which calls bastion, apache_http and load_balancer sub-modules respectively to create a Apache Http server with load balancer in OCI.
 * [modules](): Contains the reusable code for this module, broken down into one or more modules.
 * [examples](): Contains examples of how to use the modules.
 
@@ -127,4 +127,4 @@ Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
 
 Licensed under the Universal Permissive License 1.0 or Apache License 2.0.
 
-See [LICENSE](https://REPO_FQDN/projects/TFS/repos/terraform-oci-apache-http/browse/LICENSE.md?at=apache_http) for more details.
+See LICENSE for more details.
