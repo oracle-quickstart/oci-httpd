@@ -1,4 +1,5 @@
-# Oracle Cloud Infrastructure Apache HTTP Server Terraform Module
+# oci-quickstart-httpd
+These are Terraform modules that deploy [httpd](https://httpd.apache.org) on [Oracle Cloud Infrastructure (OCI)](https://cloud.oracle.com/en_US/cloud-infrastructure).
 
 ## About
 The Apache Http Server Oracle Cloud Infrastructure Module installs a Terraform-based Apache Http server on Oracle Cloud Infrastructure (OCI). An apache http server module typically involves installing three http servers on different availablity domains with load balancer.
@@ -111,20 +112,3 @@ priv_key| Private Key to be used in backend Apache HTTP server.
  * pub_cert | Public Certificate to be used in backend Apache HTTP server.
  * priv_key| Private Key to be used in backend Apache HTTP server.
 ---
-
-## Contributing
-
-This project is open source. Oracle appreciates any contributions that are made by the open source community.
-
-## Security
-
-	https://httpd.apache.org/docs/2.4/misc/security_tips.html
-	https://www.owasp.org/index.php/SCG_WS_Apache
-
-## License
-
-Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
-
-Licensed under the Universal Permissive License 1.0 or Apache License 2.0.
-
-See LICENSE for more details.
