@@ -1,4 +1,4 @@
-# oci-quickstart-httpd
+# oci-httpd
 These are Terraform modules that deploy [httpd](https://httpd.apache.org) on [Oracle Cloud Infrastructure (OCI)](https://cloud.oracle.com/en_US/cloud-infrastructure).
 
 ## About
