@@ -1,20 +1,11 @@
 ## User to define the variables before executing terraform apply.
 region = "<region to operate, example: us-ashburn-1, us-phoenix-1>"
-
 tenancy_ocid = "<OCID of the tenant>"
-
 user_ocid = "<OCID of the tenant user>"
-
 compartment_ocid = "<OCID of the compartment>"
-
 fingerprint = "<PEM key fingerprint>"
-
 private_key_path = "<Private Key path for the PEM file>"
-
 ssh_public_key_file = "<Path of ssh public key file to be used for instance>"
-
 ssh_private_key_file = "<Path of ssh private key file to be used for instance>"
-
 bastion_public_key_file = "<Path of ssh public key file to be used for bastion>"
-
 bastion_private_key_file = "<Path of ssh private key file to be used for bastion>"
