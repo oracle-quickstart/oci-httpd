@@ -1,13 +1,12 @@
 {
-  "tenancy_ocid": "ocid1.tenancy.oc1..aaaaaaaawgbzspd6cjovpmic7dahwbalg4opcbixgguo6z2s7t335m6lalbq",
-  "compartment_ocid": "ocid1.compartment.oc1..aaaaaaaawzlfllc7kkf62dzkes75urrxfxppz5fjphx27a7k5fk5jnzvyhiq",
-  "user_ocid": "ocid1.user.oc1..aaaaaaaadlmk5bfvihezwypnxvbsxd5f3bnrv2de35oxnrbarpcgbcspfqxq",
+  "user_ocid": "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  "tenancy_ocid": "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  "compartment_ocid": "ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   "region": "us-phoenix-1",
   "fingerprint": "~/.oci/oci_api_key_fingerprint",
   "private_key_path": "~/.oci/oci_api_key.pem",
   "ssh_public_key": "/home/svincy/.ssh/tf/id_rsa.pub",
   "ssh_private_key": "/home/svincy/.ssh/tf/id_rsa",
   "loadbalancer_port" : "443"
- 
-}
 
+}
